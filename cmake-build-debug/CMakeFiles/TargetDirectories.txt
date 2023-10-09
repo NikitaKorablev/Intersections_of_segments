@@ -1,0 +1,3 @@
+/home/nikita/Repositories/UNN_labs/AiSD/cmake-build-debug/CMakeFiles/AiSD.dir
+/home/nikita/Repositories/UNN_labs/AiSD/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/nikita/Repositories/UNN_labs/AiSD/cmake-build-debug/CMakeFiles/rebuild_cache.dir
