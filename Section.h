@@ -12,6 +12,8 @@
 
 struct Point {
     double x, y;
+
+    friend std::ostream& operator << (std::ostream& out, Point p);
 };
 
 // Класс Отрезок
@@ -35,18 +37,25 @@ public:
         b = p1.y - p1.x * ((p2.y - p1.y) / (p2.x - p1.x));
     };
 
+    Segment(Segment const& seg) {
+        p1 = seg.p1;
+        p2 = seg.p2;
+        k = seg.k;
+        b = seg.b;
+    }
     Point getP1() { return p1; }
     Point getP2() { return p2; }
 
     double getK() { return k; }
     double getB() { return b; }
+
+    friend std::ostream& operator << (std::ostream& out, Segment& seg);
 };
 
 // Множество для хранения отрезков
 class S {
     std::vector<Segment> s;
     int len;
-
     bool intersection(Segment a, Segment b);
 public:
     S() { len = 0; };
@@ -54,6 +63,8 @@ public:
     void appendSection(Segment sec);
     bool intersection_naive(Segment* seg1 = nullptr, Segment* seg2 = nullptr);
     void readFromFile(const std::string& filePath);
+
+    void printS();
 };
 
 
