@@ -23,50 +23,39 @@ class Segment {
     // y = kx + b уравнение прямой
     double k;
     double b;
+
+//    double tmpY;
 public:
-    Segment(Point _p1, Point _p2) {
-        if (_p1.x <= _p2.x) {
-            p1 = _p1;
-            p2 = _p2;
-        } else {
-            p1 = _p2;
-            p2 = _p1;
-        }
+    Segment(Point _p1, Point _p2);
+    Segment(const Segment& seg);
 
-        k = (p2.y - p1.y) / (p2.x - p1.x);
-        b = p1.y - p1.x * ((p2.y - p1.y) / (p2.x - p1.x));
-    };
-
-    Segment(Segment const& seg) {
-        p1 = seg.p1;
-        p2 = seg.p2;
-        k = seg.k;
-        b = seg.b;
-    }
     Point getP1() { return p1; }
     Point getP2() { return p2; }
 
     double getK() { return k; }
     double getB() { return b; }
 
+    double calcY(double time);
+//    double getY() { return tmpY; }
+
     friend std::ostream& operator << (std::ostream& out, Segment& seg);
 };
 
-// Множество для хранения отрезков
-class S {
-    std::vector<Segment> s;
-    int len;
-    bool intersection(Segment a, Segment b);
+class Segs {
+    std::vector<Segment> segments;
 public:
-    S() { len = 0; };
+    Segs(){};
+    Segs(const Segs& s);
 
-    void appendSection(Segment sec);
-    bool intersection_naive(Segment* seg1 = nullptr, Segment* seg2 = nullptr);
+    int getLen() { return segments.size(); }
     void readFromFile(const std::string& filePath);
-
     void printS();
+
+    Segment& operator [] (int i) {
+        if (i < 0 || i >= segments.size()) {
+            throw -1;
+        }
+        return segments[i];
+    }
 };
-
-
-
 #endif //AISD_SECTION_H
