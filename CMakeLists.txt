@@ -10,4 +10,6 @@ add_executable(Intersections_of_segments main.cpp
         Intersection.h
         Tree.cpp
         Tree.h
+        RandomSegments.cpp
+        RandomSegments.h
 )

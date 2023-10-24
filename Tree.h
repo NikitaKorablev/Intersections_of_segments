@@ -2,11 +2,11 @@
 // Created by nikita on 10/11/23.
 //
 
-#ifndef INTERSECTIONS_OF_SEGMENTS_TREE_H
-#define INTERSECTIONS_OF_SEGMENTS_TREE_H
-
 #include "stack"
 #include "Segments.h"
+
+#ifndef INTERSECTIONS_OF_SEGMENTS_TREE_H
+#define INTERSECTIONS_OF_SEGMENTS_TREE_H
 
 struct Node {
 //    int value;

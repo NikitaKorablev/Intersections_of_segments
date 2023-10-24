@@ -3,10 +3,23 @@
 //
 #include "Segments.h"
 
-
 std::ostream& operator << (std::ostream& out, Point p) {
     out << p.x << " " << p.y;
     return out;
+}
+
+//-----------------Vector-class-----------------
+
+Point operator - (Point& p1, Point& p2) {
+    return Point(p2.x - p1.x, p2.y - p1.y);
+}
+
+Vector operator * (Vector& v1, Vector& v2) {
+    int x = v1.y()*v2.z() - v1.z()*v2.y();
+    int y = v1.x()*v2.z() - v1.z()*v2.x();
+    int z = v1.x()*v2.y() - v1.y()*v2.x();
+
+    return Vector(Point(x, y, z));
 }
 
 //-----------------Segment-class-----------------
@@ -19,19 +32,18 @@ Segment::Segment(Point _p1, Point _p2)  {
         p1 = _p2;
         p2 = _p1;
     }
-
-    k = (p2.y - p1.y) / (p2.x - p1.x);
-    b = p1.y - p1.x * ((p2.y - p1.y) / (p2.x - p1.x));
 }
 
 Segment::Segment(const Segment& seg) {
     p1 = seg.p1;
     p2 = seg.p2;
-    k = seg.k;
-    b = seg.b;
 }
 
 double Segment::calcY(double time) { //calcY
+    if (p1.x == p2.x) throw -1;
+
+    double k = (p2.y - p1.y) / (p2.x - p1.x);
+    double b = p1.y - p1.x * ((p2.y - p1.y) / (p2.x - p1.x));
     return k * time + b;
 }
 
@@ -40,11 +52,33 @@ std::ostream& operator << (std::ostream& out, Segment& seg) {
     return out;
 }
 
+
+
+//-----------------Segs-class-----------------
+
 Segs::Segs(const Segs& s) {
     segments = s.segments;
 }
 
-//-----------------Segs-class-----------------
+bool intersection(Segment a, Segment b) {
+    Point aP1 = a.getP1(); Point bP1 = b.getP1();
+    Point aP2 = a.getP2(); Point bP2 = b.getP2();
+    Vector vec1(aP2 - aP1), vec2(bP2 - bP1);
+
+    Vector v1(bP1 - aP1), v2(bP2 - aP1);
+    Vector prod1(vec1 * v1), prod2(vec1 * v2);
+
+    if (prod1.z() > 0 && prod2.z() > 0 ||
+        prod1.z() < 0 && prod2.z() < 0) return false;
+
+    Vector v3(aP1 - bP1), v4(aP2 - bP1);
+    prod1 = vec2 * v3; prod2 = vec2 * v4;
+
+    if (prod1.z() > 0 && prod2.z() > 0 ||
+        prod1.z() < 0 && prod2.z() < 0) return false;
+
+    return true;
+}
 
 void Segs::readFromFile(const std::string &filePath) {
     std::ifstream file;
@@ -64,6 +98,26 @@ void Segs::readFromFile(const std::string &filePath) {
 
             segments.push_back(seg);
         }
+        file.close();
+    }
+}
+
+void Segs::wrightToFile(const std::string& filePath, bool clearFile) {
+    std::ofstream file;
+    if (clearFile) file.open(filePath);
+    else file.open(filePath, std::ios::app);
+
+    if (file.is_open()) {
+        if (clearFile) file << "";
+        else {
+            for (auto &element: segments) {
+                file << element << std::endl;
+            }
+            file << "~==~" << std::endl;
+        }
+        file.close();
+    } else {
+        std::exit(-1);
     }
 }
 
@@ -72,4 +126,8 @@ void Segs::printS() {
         std::cout << element << std::endl;
         std::cout << "----------------" << std::endl;
     }
+}
+
+void Segs::clear() {
+    segments.clear();
 }
