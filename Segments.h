@@ -12,10 +12,11 @@
 #define AISD_SECTION_H
 
 struct Point {
-    int x, y;
-    int z = 0;
+    double x, y;
+    double z = 0.0;
 
     friend std::ostream& operator << (std::ostream& out, Point p);
+    friend bool operator == (Point& p1, Point& p2);
 };
 
 struct Vector {
@@ -47,6 +48,7 @@ public:
 //    double getY() { return tmpY; }
 
     friend std::ostream& operator << (std::ostream& out, Segment& seg);
+    friend bool operator == (Segment seg1, Segment seg2);
 };
 
 bool intersection(Segment a, Segment b);
@@ -60,7 +62,7 @@ public:
     int getLen() { return segments.size(); }
     void pushBack(Segment seg) { segments.push_back(seg); };
     void readFromFile(const std::string& filePath);
-    void wrightToFile(const std::string& filePath, bool clearFile = false);
+    void saveToFile(const std::string& filePath, bool clearFile = false);
     void printS();
     void clear();
 

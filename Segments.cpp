@@ -22,6 +22,14 @@ Vector operator * (Vector& v1, Vector& v2) {
     return Vector(Point(x, y, z));
 }
 
+bool operator == (Point& p1, Point& p2) {
+    if (p1.x == p2.x &&
+        p1.y == p2.y &&
+        p1.z == p2.z) return true;
+
+    return false;
+}
+
 //-----------------Segment-class-----------------
 
 Segment::Segment(Point _p1, Point _p2)  {
@@ -52,7 +60,12 @@ std::ostream& operator << (std::ostream& out, Segment& seg) {
     return out;
 }
 
+bool operator == (Segment seg1, Segment seg2) {
+    if (seg1.p1 == seg2.p1 &&
+        seg1.p2 == seg2.p2) return true;
 
+    return false;
+}
 
 //-----------------Segs-class-----------------
 
@@ -102,19 +115,18 @@ void Segs::readFromFile(const std::string &filePath) {
     }
 }
 
-void Segs::wrightToFile(const std::string& filePath, bool clearFile) {
+void Segs::saveToFile(const std::string& filePath, bool clearFile) {
+    if (filePath == "") throw -1;
+
     std::ofstream file;
     if (clearFile) file.open(filePath);
     else file.open(filePath, std::ios::app);
 
     if (file.is_open()) {
-        if (clearFile) file << "";
-        else {
-            for (auto &element: segments) {
-                file << element << std::endl;
-            }
-            file << "~==~" << std::endl;
+        for (auto &element: segments) {
+            file << element << std::endl;
         }
+        file << "~==~" << std::endl;
         file.close();
     } else {
         std::exit(-1);

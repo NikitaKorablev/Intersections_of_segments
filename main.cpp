@@ -1,12 +1,19 @@
 //#include "Intersection.h"
 //#include "Tree.h"
-#include "RandomSegments.h"
+#include "Tests.h"
 
 int main() {
-    Segs* s = new Segs;
+    t1(); t2();
+    t3(); t4();
 
-//    s->readFromFile("../data/Segments.txt");
-    rSegmentsKShift(s,1 , 3);
+
+
+//    Segs* s = new Segs;
+//    std::string fileDir = "../data/test1.txt";
+    //    test1(s, fileDir);
+    //    s->readFromFile("../data/Segments.txt");
+
+
 
 
 //    Segment *seg1;
