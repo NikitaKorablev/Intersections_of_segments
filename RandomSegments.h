@@ -3,8 +3,8 @@
 //
 
 
-#include "time.h"
-#include "stdlib.h"
+#include "ctime"
+#include "cstdlib"
 #include "cmath"
 #include <unistd.h>
 #include "random"
@@ -14,7 +14,6 @@
 #ifndef INTERSECTIONS_OF_SEGMENTS_RANDOMSEGMENTS_H
 #define INTERSECTIONS_OF_SEGMENTS_RANDOMSEGMENTS_H
 
-int r(int left = -1000, int right = 1000);
 
 /// Функция создаёт случайный отрезок
 /// \return возвращает случайно созданный отрезок длинной 1

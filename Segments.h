@@ -2,69 +2,37 @@
 // Created by nikita on 10/8/23.
 //
 #include "vector"
-#include "iostream"
 #include "fstream"
 #include "sstream"
 #include "string"
 #include <cmath>
+#include "Tree.h"
 
 #ifndef AISD_SECTION_H
 #define AISD_SECTION_H
 
-struct Point {
-    double x, y;
-    double z = 0.0;
-
-    friend std::ostream& operator << (std::ostream& out, Point p);
-    friend bool operator == (Point& p1, Point& p2);
-};
-
-struct Vector {
-    Point p;
-
-    int x() { return p.x; }
-    int y() { return p.y; }
-    int z() { return p.z; }
-
-    friend Point operator - (Point& p1, Point& p2);
-    friend Vector operator * (Vector& v1, Vector& v2);
-};
-
-// Класс Отрезок
-class Segment {
-    Point p1;
-    Point p2;
-    // y = kx + b уравнение прямой
-
-//    double tmpY;
-public:
-    Segment(Point _p1, Point _p2);
-    Segment(const Segment& seg);
-
-    Point getP1() { return p1; }
-    Point getP2() { return p2; }
-
-    double calcY(double time);
-//    double getY() { return tmpY; }
-
-    friend std::ostream& operator << (std::ostream& out, Segment& seg);
-    friend bool operator == (Segment seg1, Segment seg2);
-};
-
-bool intersection(Segment a, Segment b);
 
 class Segs {
     std::vector<Segment> segments;
+    std::vector<Point> points;
+
+    int partition(int l, int r);
 public:
     Segs(){};
     Segs(const Segs& s);
 
     int getLen() { return segments.size(); }
     void pushBack(Segment seg) { segments.push_back(seg); };
+    void pushBackPoint(Point p) { points.push_back(p); }
+    void sortPoints(int l = -1, int r = -1);
+
     void readFromFile(const std::string& filePath);
     void saveToFile(const std::string& filePath, bool clearFile = false);
     void printS();
     void clear();
+
+    bool intersection_naive();
+    bool intersection_effective();
 
     Segment front() { return segments.front(); }
     Segment back() { return segments.back(); }

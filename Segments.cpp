@@ -3,69 +3,7 @@
 //
 #include "Segments.h"
 
-std::ostream& operator << (std::ostream& out, Point p) {
-    out << p.x << " " << p.y;
-    return out;
-}
 
-//-----------------Vector-class-----------------
-
-Point operator - (Point& p1, Point& p2) {
-    return Point(p2.x - p1.x, p2.y - p1.y);
-}
-
-Vector operator * (Vector& v1, Vector& v2) {
-    int x = v1.y()*v2.z() - v1.z()*v2.y();
-    int y = v1.x()*v2.z() - v1.z()*v2.x();
-    int z = v1.x()*v2.y() - v1.y()*v2.x();
-
-    return Vector(Point(x, y, z));
-}
-
-bool operator == (Point& p1, Point& p2) {
-    if (p1.x == p2.x &&
-        p1.y == p2.y &&
-        p1.z == p2.z) return true;
-
-    return false;
-}
-
-//-----------------Segment-class-----------------
-
-Segment::Segment(Point _p1, Point _p2)  {
-    if (_p1.x <= _p2.x) {
-        p1 = _p1;
-        p2 = _p2;
-    } else {
-        p1 = _p2;
-        p2 = _p1;
-    }
-}
-
-Segment::Segment(const Segment& seg) {
-    p1 = seg.p1;
-    p2 = seg.p2;
-}
-
-double Segment::calcY(double time) { //calcY
-    if (p1.x == p2.x) throw -1;
-
-    double k = (p2.y - p1.y) / (p2.x - p1.x);
-    double b = p1.y - p1.x * ((p2.y - p1.y) / (p2.x - p1.x));
-    return k * time + b;
-}
-
-std::ostream& operator << (std::ostream& out, Segment& seg) {
-    out << seg.getP1() << ", " << seg.getP2();
-    return out;
-}
-
-bool operator == (Segment seg1, Segment seg2) {
-    if (seg1.p1 == seg2.p1 &&
-        seg1.p2 == seg2.p2) return true;
-
-    return false;
-}
 
 //-----------------Segs-class-----------------
 
@@ -91,6 +29,29 @@ bool intersection(Segment a, Segment b) {
         prod1.z() < 0 && prod2.z() < 0) return false;
 
     return true;
+}
+
+int Segs::partition(int left, int right) {
+    Point pivot = points[right];
+    int wall = left;
+    for (int i = left; i < right-1; i++) {
+        if (points[i] <= pivot) {
+            std::swap(points[i], points[wall]);
+            wall++;
+        }
+    }
+    return wall;
+}
+
+void Segs::sortPoints(int left, int right) {
+    if (left == -1 || right == -1) {
+        left = 0; right = points.size();
+    }
+
+    if (right - left == 1) return;
+    int wall = partition(left, right);
+    sortPoints(left, wall);
+    sortPoints(wall, right);
 }
 
 void Segs::readFromFile(const std::string &filePath) {
@@ -142,4 +103,46 @@ void Segs::printS() {
 
 void Segs::clear() {
     segments.clear();
+}
+
+bool Segs::intersection_naive() {
+    bool res = false;
+    int len = segments.size();
+    for (int i = 0; i < len-1; i++) {
+        for (int j = i + 1; j < len; j++) {
+            if (intersection(segments[i], segments[j])) {
+                res = true;
+                break;
+            }
+        }
+        if (res) break;
+    }
+    return res;
+}
+
+bool Segs::intersection_effective() {
+    Tree tree; sortPoints();
+    bool inter = false;
+
+    for (auto p : points) {
+        Segment s = segments[p.segmentIndex];
+        if (p.isLeft) {
+            tree.insert(s);
+            Segment s1 = tree.getPrev(s);
+            Segment s2 = tree.getNext(s);
+            if (intersection(s, s1) || intersection(s, s2)) {
+                inter = true;
+                break;
+            }
+        } else {
+            Segment s1 = tree.getPrev(s);
+            Segment s2 = tree.getNext(s);
+            if (intersection(s1, s2)) {
+                inter = true;
+                break;
+            }
+            tree.del(s);
+        }
+    }
+    return inter;
 }

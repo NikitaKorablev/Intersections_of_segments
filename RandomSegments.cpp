@@ -3,9 +3,7 @@
 //
 #include "RandomSegments.h"
 
-int r(int left, int right) {
-    return rand() % (right - left + 1) + left;
-}
+
 
 Segment* randCreateSeg(int left, int right, int down, int up) {
 //    std::cout << "call" << std::endl;
@@ -23,7 +21,6 @@ Segment* randCreateSeg(int left, int right, int down, int up) {
 }
 
 void createRSegsByPoints(Segs* &s, int n, int k) {
-    srand(time(NULL));
     if (n == 0) return;
 
     if (n == 1) {
@@ -141,7 +138,6 @@ Segment* randSegsByLength(double len) {
 }
 
 void createRSegsByLength(Segs* &segments, double length, int n) {
-    srand(time(NULL));
     segments->clear();
     Segment* seg;
     for (int i = 0; i < n; i++) {

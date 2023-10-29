@@ -4,6 +4,10 @@
 
 #include "Tree.h"
 
+int ran(int left, int right) {
+    return rand() % (right - left + 1) + left;
+}
+
 Node* Node::getPrev() {
     if (parent->r == this && l == nullptr) return parent;
     else if (parent->l == this && l == nullptr) {
@@ -63,6 +67,16 @@ Node* Tree::search(Segment* s) {
     return nullptr;
 }
 
+Node* Tree::search(const Segment& s) {
+    if (root == nullptr) return nullptr;
+
+    Node* node = root;
+    while (node != nullptr) {
+        if (*node->seg == s) return node;
+        node = node->key < node->key ? node->l : node->r;
+    }
+    return nullptr;
+}
 //void Tree::upHeight(std::stack<Node*>* &st) {
 //    while(!st->empty()) {
 //        Node* node = st->top();
@@ -75,7 +89,8 @@ void Tree::updateHeight(Node *node) {
     node->height = std::max(node->l->height, node->r->height) + 1;
 }
 
-void Tree::insert(Segment* seg) {
+void Tree::insert(const Segment& segment) {
+    auto* seg = new Segment(segment);
     if (root == nullptr) {
         root = new Node(seg);
         return;
@@ -107,8 +122,7 @@ void Tree::insert(Segment* seg) {
     balance(node);
 }
 
-void Tree::del(Segment* seg) {
-    Node* node = search(seg);
+void Tree::del(Node* node) {
     if (node == nullptr) throw -1;
 
     if (node->l == nullptr || node->r == nullptr) {
@@ -131,6 +145,10 @@ void Tree::del(Segment* seg) {
         updateHeight(p);
         balance(p);
     }
+}
+
+void Tree::del(const Segment& seg) {
+    del(search(seg));
 }
 
 void Tree::swap(Node *a, Node *b) { // TODO: Проверить на работоспособность
@@ -157,6 +175,18 @@ void Tree::balance(Node *node) {
         if (getBalance(node->r) == -1) rightRotate(node->r);
         leftRotate(node);
     }
+}
+
+Segment Tree::getPrev(const Segment& seg) {
+    Node* node = search(seg)->getPrev();
+    if (node == nullptr) return nonInterSeg;
+    else return *node->seg;
+}
+
+Segment Tree::getNext(const Segment& seg) {
+    Node* node = search(seg)->getNext();
+    if (node == nullptr) return nonInterSeg;
+    else return *node->seg;
 }
 
 void Tree::printTree(Node *node) {
