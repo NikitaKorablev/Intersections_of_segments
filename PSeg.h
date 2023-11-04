@@ -27,9 +27,9 @@ struct Point {
 struct Vector {
     Point p;
 
-    int x() { return p.x; }
-    int y() { return p.y; }
-    int z() { return p.z; }
+    double x() { return p.x; }
+    double y() { return p.y; }
+    double z() { return p.z; }
 
 
     friend Vector operator * (Vector& v1, Vector& v2);
@@ -39,24 +39,34 @@ struct Vector {
 class Segment {
     Point p1;
     Point p2;
+
+    double k;
+    double b;
     // y = kx + b уравнение прямой
 
-//    double tmpY;
+//    double currentX;
 public:
     Segment();
     Segment(Point _p1, Point _p2);
     Segment(const Segment& seg);
 
-    Point getP1() { return p1; }
-    Point getP2() { return p2; }
+//    void setCurrentX(double x);
+//    double getCurrentX() const;
+
+    void calcCoef();
+
+    Point getP1() const { return p1; }
+    Point getP2() const { return p2; }
 
     double calcY(double time);
+//    double calcY();
 //    double getY() { return tmpY; }
 
     friend std::ostream& operator << (std::ostream& out, Segment& seg);
+    friend std::ostream& operator << (std::ostream& out, const Segment& seg);
     friend bool operator == (Segment seg1, Segment seg2);
+    friend bool operator != (Segment seg1, Segment seg2);
 };
 
-bool intersection(Segment a, Segment b);
 
 #endif //INTERSECTIONS_OF_SEGMENTS_PSEG_H

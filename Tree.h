@@ -8,65 +8,69 @@
 #ifndef INTERSECTIONS_OF_SEGMENTS_TREE_H
 #define INTERSECTIONS_OF_SEGMENTS_TREE_H
 
-int ran(int left, int right);
-
 struct Node {
 //    int value;
-    double key;
-    double lastTime;
+//    double key;
+//    double lastTime;
     int height;
     Node* parent;
     Node* l;
     Node* r;
-    Segment* seg;
-    explicit Node(Segment* segment, Node* left = nullptr,
-                  Node* right = nullptr, Node* _parent = nullptr,
-                  int h = -1) :
-                  seg(segment), height(h), l(left), r(right){};
+    Segment seg;
+    explicit Node(const Segment& segment, Node* _parent = nullptr,
+                  Node* left = nullptr, Node* right = nullptr, int h = 0) :
+                  seg(segment), height(h), l(left), r(right),
+                  parent(_parent){};
 
     Node* getPrev();
     Node* getNext();
 
-    double updateKey(double x);
+    Node* getMax();
+    Node* getMin();
+
+    bool isLeaf() const;
+
+//    void setCurrentX(double x);
 
     ~Node() {
-        delete parent;
-        delete l;
-        delete r;
-        delete seg;
+        l = nullptr;
+        r = nullptr;
     }
 };
 
 class Tree {
     Node* root;
-    Segment nonInterSeg;
+    Segment nonInterSeg1;
+    Segment nonInterSeg2;
 
-    Node* getMax(Node* node);
-    Node* getMin(Node* node);
-    void swap(Node* a, Node* b);
-    void updateHeight(Node* node);
+    static void swap(Node* a, Node* b);
+    static void updateHeight(Node* node);
     int getHeight(Node* node);
     int getBalance(Node* node);
-    void rightRotate(Node* node);
-    void leftRotate(Node* node);
+    static void rightRotate(Node* node);
+    static void leftRotate(Node* node);
     void balance(Node* node);
-
-
 public:
-    Tree() { root = nullptr; }
-    void insert(const Segment& seg);
-    void del(Node* node);
-    void del(const Segment& seg);
+    Tree() {
+        root = nullptr;
+        nonInterSeg1 = Segment(Point(500, 600),
+                               Point(501, 601));
+        nonInterSeg2 = Segment(Point(-500, -600),
+                               Point(-501, -601));
+    }
+
+    Node* getRoot() { return root; }
+
+    Node* insert(Node* node, Segment seg);
+    Node* del(Node* node, Segment seg);
+    Node* remove(Segment seg);
+
     void printTree(Node* node);
 
-    Segment getPrev(const Segment& seg);
-    Segment getNext(const Segment& seg);
+    Segment getPrev(Node* node);
+    Segment getNext(Node* node);
 
-    Node* search(Segment* s);
-    Node* search(const Segment& s);
-    ~Tree() {
-        delete root;
-    }
+    Node* search(Node* node, Segment s, double time);
 };
 
 #endif //INTERSECTIONS_OF_SEGMENTS_TREE_H

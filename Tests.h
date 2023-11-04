@@ -8,9 +8,9 @@
 #ifndef INTERSECTIONS_OF_SEGMENTS_TESTS_H
 #define INTERSECTIONS_OF_SEGMENTS_TESTS_H
 
-void test1(std::string fileDir = "");
-void test2(std::string fileDir = "");
-void test3(std::string fileDir = "");
-void test4(std::string fileDir = "");
+void test1();
+void test2();
+void test3();
+void test4();
 
 #endif //INTERSECTIONS_OF_SEGMENTS_TESTS_H
