@@ -2,7 +2,7 @@
 // Created by nikita on 10/27/23.
 //
 
-#include "RandomSegments.h"
+#include "Segments.h"
 #include "chrono"
 
 #ifndef INTERSECTIONS_OF_SEGMENTS_TESTS_H

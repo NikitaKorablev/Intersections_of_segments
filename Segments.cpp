@@ -12,7 +12,6 @@ Segs::Segs(const Segs& s) {
 }
 
 Segment* Segs::randCreateSeg(int left, int right, int down, int up) {
-//    std::cout << "call" << std::endl;
     double x1 = (double)rand() / RAND_MAX;
     double x2 = (double)rand() / RAND_MAX;
     double y1 = (double)rand() / RAND_MAX;

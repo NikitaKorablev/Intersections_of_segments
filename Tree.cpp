@@ -25,28 +25,6 @@ Node* Node::getPrev() {
         return node->getMax();
     }
     throw -1;
-
-
-//    if (parent == nullptr) {
-//        if (l == nullptr) return nullptr;
-//        Node* node = l;
-//        while (node->r != nullptr) node = node->r;
-//        return node;
-//    }
-//    if (parent->r == this && l == nullptr) return parent;
-//    else if (parent->l == this && l == nullptr) {
-//        Node* node = parent;
-//        while (node->parent != nullptr && node != node->parent->r) {
-//            node = node->parent;
-//        }
-//        if (node->parent == nullptr) return nullptr;
-//        else return node->parent;
-//    } else {
-//        if (l == nullptr) return nullptr;
-//        Node* node = l;
-//        while (node->r != nullptr) node = node->r;
-//        return node;
-//    }
 }
 
 Node* Node::getNext() {
@@ -70,27 +48,6 @@ Node* Node::getNext() {
         return node->getMin();
     }
     throw -1;
-
-//    if (parent == nullptr) {
-//        if (r == nullptr) return nullptr;
-//        Node* node = r;
-//        while (node->l != nullptr) node = node->l;
-//        return node;
-//    }
-//    if (parent->l == this && r == nullptr) return parent;
-//    else if (parent->r == this && r == nullptr) {
-//        Node* node = parent;
-//        while (node->parent != nullptr && node != node->parent->l) {
-//            node = node->parent;
-//        }
-//        if (node->parent == nullptr) return nullptr;
-//        else return node->parent;
-//    } else {
-//        if (r == nullptr) return nullptr;
-//        Node* node = r;
-//        while (node->l != nullptr) node = node->l;
-//        return node;
-//    }
 }
 
 Node* Node::getMax() {
@@ -107,31 +64,6 @@ bool Node::isLeaf() const {
     return l == nullptr && r == nullptr;
 }
 
-//void Node::setCurrentX(double x) {
-//    seg.setCurrentX(x);
-//}
-
-//Node* Tree::getMax(Node *node) {
-//    while (node->r != nullptr) node = node->r;
-//    return node;
-//}
-
-//Node* Tree::getMin(Node *node) {
-//    while (node->l != nullptr) node = node->r;
-//    return node;
-//}
-
-//Node* Tree::search(Segment* s) {
-//    if (root == nullptr) return nullptr;
-//
-//    Node* node = root;
-//    while (node != nullptr) {
-//        if (node->seg == *s) return node;
-//        node = node->key < node->key ? node->l : node->r;
-//    }
-//    return nullptr;
-//}
-
 Node* Tree::search(Node* node, Segment s, double time) {
     if (node == nullptr)
         return nullptr;
@@ -144,13 +76,6 @@ Node* Tree::search(Node* node, Segment s, double time) {
     else if (sKey > nodeKey) return search(node->r, s, time);
     throw -1;
 }
-//void Tree::upHeight(std::stack<Node*>* &st) {
-//    while(!st->empty()) {
-//        Node* node = st->top();
-//        node->height = std::max(node->l->height, node->r->height) + 1;
-//        st->pop();
-//    }
-//}
 
 void Tree::updateHeight(Node *node) {
     if (node->isLeaf()) node->height = 0;
@@ -198,47 +123,9 @@ Node* Tree::insert(Node* node, Segment segment) {
 }
 
 Node* Tree::del(Node* node, Segment seg) {
-//    if (node == nullptr) return node;
-//
-//    seg.setCurrentX(seg.getP2().x);
-//    node->seg.setCurrentX(seg.getP2().x);
-//
-//    if (seg < node->seg) {
-//        node->l = del(node->l, seg);
-//        if (node->l) node->l->parent = node;
-//    }
-//    else if (seg > node->seg) {
-//        node->r = del(node->r, seg);
-//        if (node->r) node->r->parent = node;
-//    }
-//    else {
-//        if (node->isLeaf()) return nullptr;
-//        if (node->r) {
-//            Node* minInRight = node->r->getMin();
-//            node->seg = minInRight->seg;
-//            node->r = del(node->r, minInRight->seg);
-//            if (node->r) node->r->parent = node;
-//        } else if (node->l) {
-//            node->seg = node->l->seg;
-//            node->l = del(node->l, node->l->seg);
-//            if (node->l) node->l->parent = node;
-//        }
-//    }
-//
-//    updateHeight(node);
-//    balance(node);
-//    return node;
-//    if (node->isLeaf() && node == root) {
-//        root = nullptr;
-//        return root;
-//    }
-
     if (node == nullptr) return node;
-//    seg.setCurrentX(seg.getP2().x);
-//    node->seg.setCurrentX(seg.getP2().x);
 
     double time = seg.getP2().x;
-
     double sKey = seg.calcY(time);
     double nodeKey = node->seg.calcY(time);
 
@@ -254,7 +141,6 @@ Node* Tree::del(Node* node, Segment seg) {
                 node->l = temp->l;
                 node->r = temp->r;
                 node->seg = temp->seg;
-//                *node = *temp;
             }
             delete temp;
         }
@@ -308,28 +194,12 @@ void Tree::balance(Node *node) {
     }
 }
 
-//Segment Tree::getPrev(const Segment& seg) {
-//    Node* snode = search(root, seg);
-//    if (snode == nullptr) return nonInterSeg1;
-//    Node* node = snode->getPrev();
-//    if (node == nullptr) return nonInterSeg1;
-//    else return node->seg;
-//}
-
 Segment Tree::getPrev(Node* node) {
     if (node == nullptr) return nonInterSeg1;
     Node* node2 = node->getPrev();
     if (node2 == nullptr) return nonInterSeg1;
     else return node2->seg;
 }
-
-//Segment Tree::getNext(const Segment& seg) {
-//    Node* snode = search(root, seg);
-//    if (snode == nullptr) return nonInterSeg2;
-//    Node* node = snode->getNext();
-//    if (node == nullptr) return nonInterSeg2;
-//    else return node->seg;
-//}
 
 Segment Tree::getNext(Node* node) {
     if (node == nullptr) return nonInterSeg2;
@@ -340,8 +210,6 @@ Segment Tree::getNext(Node* node) {
 
 void Tree::printTree(Node *node) {
     if (node == nullptr) return;
-//    double x = node->seg.getCurrentX();
-//    node->updateKey(x);
     printTree(node->l);
     std::cout << node << std::endl;
     printTree(node->r);

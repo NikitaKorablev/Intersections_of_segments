@@ -8,8 +8,6 @@ add_executable(Intersections_of_segments main.cpp
         Segments.cpp
         Tree.cpp
         Tree.h
-        RandomSegments.cpp
-        RandomSegments.h
         Tests.cpp
         Tests.h
         PSeg.cpp

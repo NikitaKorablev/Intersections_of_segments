@@ -42,16 +42,10 @@ class Segment {
 
     double k;
     double b;
-    // y = kx + b уравнение прямой
-
-//    double currentX;
 public:
     Segment();
     Segment(Point _p1, Point _p2);
     Segment(const Segment& seg);
-
-//    void setCurrentX(double x);
-//    double getCurrentX() const;
 
     void calcCoef();
 
@@ -59,8 +53,6 @@ public:
     Point getP2() const { return p2; }
 
     double calcY(double time);
-//    double calcY();
-//    double getY() { return tmpY; }
 
     friend std::ostream& operator << (std::ostream& out, Segment& seg);
     friend std::ostream& operator << (std::ostream& out, const Segment& seg);

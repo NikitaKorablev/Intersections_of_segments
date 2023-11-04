@@ -93,38 +93,19 @@ Segment::Segment(const Segment& seg) {
     b = seg.b;
 }
 
-//void Segment::setCurrentX(double x) {
-//    currentX = x;
-//}
-//
-//double Segment::getCurrentX() const {
-//    return currentX;
-//}
-
 void Segment::calcCoef() {
     double a1 = p2.y - p1.y;
     double a2 = p2.x - p1.x;
 
     k = (a1) / (a2);
-//    if (k > 50) {
-//        throw -1;
-//    }
-
     b = (p1.y*p2.x - p1.x*p2.y) / (a2);
 }
 
 
 double Segment::calcY(double time) { //calcY
     calcCoef();
-//    if (p1.x == p2.x) throw -1;
     return k * time + b;
 }
-
-//double Segment::calcY() { //calcY
-//    calcCoef();
-////    if (p1.x == p2.x) throw -1;
-//    return k * currentX + b;
-//}
 
 std::ostream& operator << (std::ostream& out, Segment& seg) {
     out << seg.getP1() << ", " << seg.getP2();
@@ -143,27 +124,3 @@ bool operator == (Segment seg1, Segment seg2) {
 bool operator != (Segment seg1, Segment seg2) {
     return !(seg1 == seg2);
 }
-
-//bool operator < (Segment seg1, Segment seg2) {
-//    if (seg1.p1.x < seg1.currentX || seg1.currentX > seg1.p2.x) throw -1;
-//    if (seg2.p1.x < seg1.currentX || seg1.currentX > seg2.p2.x) throw -1;
-//    return (seg1.calcY() < seg2.calcY(seg1.currentX));
-//}
-//
-//bool operator <= (Segment seg1, Segment seg2) {
-//    if (seg1.p1.x < seg1.currentX || seg1.currentX > seg1.p2.x) throw -1;
-//    if (seg2.p1.x < seg1.currentX || seg1.currentX > seg2.p2.x) throw -1;
-//    return (seg1.calcY() <= seg2.calcY(seg1.currentX));
-//}
-//
-//bool operator > (Segment seg1, Segment seg2) {
-//    if (seg1.p1.x < seg1.currentX || seg1.currentX > seg1.p2.x) throw -1;
-//    if (seg2.p1.x < seg1.currentX || seg1.currentX > seg2.p2.x) throw -1;
-//    return (seg1.calcY() > seg2.calcY(seg1.currentX));
-//}
-//
-//bool operator >= (Segment seg1, Segment seg2) {
-//    if (seg1.p1.x < seg1.currentX || seg1.currentX > seg1.p2.x) throw -1;
-//    if (seg2.p1.x < seg1.currentX || seg1.currentX > seg2.p2.x) throw -1;
-//    return (seg1.calcY() >= seg2.calcY(seg1.currentX));
-//}

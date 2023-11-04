@@ -22,8 +22,6 @@ class Segs {
                            int down = 1000000, int up = 1000000);
     Segment* randSegsByLength(double len);
 public:
-    void sTest() { sortPoints(0, points.size()-1); }
-
     Segs(){};
     Segs(const Segs& s);
 
@@ -33,7 +31,6 @@ public:
     int getLen() { return segments.size(); }
     int getPointLen() {return points.size(); }
     void pushBack(const Segment& seg);
-//    void pushBackPoint(Point p) { points.push_back(p); }
     void sortPoints(int l, int r);
 
     void readFromFile(const std::string& filePath);
