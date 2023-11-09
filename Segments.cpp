@@ -232,14 +232,16 @@ bool Segs::intersection_effective() {
             Segment s1 = tree.getPrev(addedSegment);
             inter = intersection(s, s1);
             if (inter) {
-                std::cout << "count = " << count << std::endl;
+                std::cout << s << std::endl;
+                std::cout << s1 << std::endl;
                 break;
             }
 
             Segment s2 = tree.getNext(addedSegment);
             inter = intersection(s, s2);
             if (inter) {
-                std::cout << "count = " << count << std::endl;
+                std::cout << s << std::endl;
+                std::cout << s2 << std::endl;
                 break;
             }
         } else {
@@ -249,7 +251,8 @@ bool Segs::intersection_effective() {
             Segment s2 = tree.getNext(node);
             inter = intersection(s1, s2);
             if (inter) {
-                std::cout << "count = " << count << std::endl;
+                std::cout << s1 << std::endl;
+                std::cout << s2 << std::endl;
                 break;
             }
             tree.remove(s);

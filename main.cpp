@@ -5,35 +5,31 @@
 int main() {
     srand(time(NULL));
 
+    Segs s;
+
+    Point p1(2, 1);
+    Point p2(3, 4);
+    Point p3(1, 0);
+    Point p4(7, 9);
+
+    p1.segmentIndex = s.getLen();
+    p2.segmentIndex = s.getLen();
+    Segment seg1(p1, p2);
+    s.pushBack(seg1);
+
+    p3.segmentIndex = s.getLen();
+    p4.segmentIndex = s.getLen();
+    Segment seg2(p3, p4);
+    s.pushBack(seg2);
+
+    s.sortPoints(0, s.getPointLen()-1);
+
+    std:: cout << s.intersection_naive() << std::endl;
+    std:: cout << s.intersection_effective() << std::endl;
+
 //    test1();
 //    test2();
 //    test3();
 //    test4();
-
-//    Tree t;
-//    Segment s1(Point(2, 6),
-//               Point(5, 5));
-//    Segment s2(Point(3,2),
-//               Point(7,3));
-//    Segment s3(Point(4, 4), Point(9, 4));
-//    Segment s4(Point(4, 0), Point(6, 2));
-//
-//    t.insert(t.getRoot(), s1);
-//    t.insert(t.getRoot(), s2);
-//    t.insert(t.getRoot(), s3);
-//    t.insert(t.getRoot(), s4);
-//
-//    std::cout << t.search(t.getRoot(), s4, 5) << std::endl;
-//
-//    t.remove(s1);
-//    t.remove(s4);
-//    t.remove(s2);
-//    t.remove(s3);
-
-//    Segs* s = new Segs;
-//    std::string fileDir = "../data/test1.txt";
-//    test1(s, fileDir);
-//    s->readFromFile("../data/Segments.txt");
-
     return 0;
 }
