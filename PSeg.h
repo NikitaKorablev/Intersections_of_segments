@@ -48,6 +48,7 @@ public:
     Segment(const Segment& seg);
 
     void calcCoef();
+    void setSegIndexForPoints(int ind);
 
     Point getP1() const { return p1; }
     Point getP2() const { return p2; }

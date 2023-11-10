@@ -101,6 +101,10 @@ void Segment::calcCoef() {
     b = (p1.y*p2.x - p1.x*p2.y) / (a2);
 }
 
+void Segment::setSegIndexForPoints(int ind) {
+    p1.segmentIndex = ind;
+    p2.segmentIndex = ind;
+}
 
 double Segment::calcY(double time) { //calcY
     calcCoef();

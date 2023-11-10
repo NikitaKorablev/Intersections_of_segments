@@ -18,8 +18,7 @@ class Segs {
     std::vector<Point> points;
 
     int partition(int l, int r);
-    Segment* randCreateSeg(int left = -1000000, int right = 1000000,
-                           int down = 1000000, int up = 1000000);
+    Segment* randCreateSeg();
     Segment* randSegsByLength(double len);
 public:
     Segs(){};
@@ -28,9 +27,9 @@ public:
     void rSetByPoints(int n, int k = -1);
     void rSetByLength(double length, int n);
 
-    int getLen() { return segments.size(); }
-    int getPointLen() {return points.size(); }
-    void pushBack(const Segment& seg);
+    size_t getLen() { return segments.size(); }
+    size_t getPointLen() {return points.size(); }
+    void pushBack(Segment seg);
     void sortPoints(int l, int r);
 
     void readFromFile(const std::string& filePath);
@@ -38,8 +37,8 @@ public:
     void printS();
     void clear();
 
-    bool intersection_naive();
-    bool intersection_effective();
+    bool intersectionNaive();
+    bool intersectionEffective();
 
     Segment front() { return segments.front(); }
     Segment back() { return segments.back(); }

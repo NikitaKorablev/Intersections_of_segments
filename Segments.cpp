@@ -11,7 +11,7 @@ Segs::Segs(const Segs& s) {
     segments = s.segments;
 }
 
-Segment* Segs::randCreateSeg(int left, int right, int down, int up) {
+Segment* Segs::randCreateSeg() {
     double x1 = (double)rand() / RAND_MAX;
     double x2 = (double)rand() / RAND_MAX;
     double y1 = (double)rand() / RAND_MAX;
@@ -20,8 +20,8 @@ Segment* Segs::randCreateSeg(int left, int right, int down, int up) {
     while (x2 == x1) x2 = (double)rand() / RAND_MAX;
 
     Point p1(x1, y1), p2(x2, y2);
-    p1.segmentIndex = getLen();
-    p2.segmentIndex = getLen();
+//    p1.segmentIndex = getLen();
+//    p2.segmentIndex = getLen();
 
     return new Segment(p1, p2);
 }
@@ -40,8 +40,8 @@ Segment* Segs::randSegsByLength(double len) {
     double y2 = middleY + len*std::sin(angle) / 2.0;
 
     Point p1(x1, y1), p2(x2, y2);
-    p1.segmentIndex = getLen();
-    p2.segmentIndex = getLen();
+//    p1.segmentIndex = getLen();
+//    p2.segmentIndex = getLen();
 
     return new Segment(p1, p2);
 }
@@ -99,7 +99,9 @@ void Segs::rSetByLength(double length, int n) {
     }
 }
 
-void Segs::pushBack(const Segment& seg) {
+void Segs::pushBack(Segment seg) {
+    seg.setSegIndexForPoints(getLen());
+
     segments.push_back(seg);
     points.push_back(seg.getP1());
     points.push_back(seg.getP2());
@@ -199,7 +201,7 @@ void Segs::clear() {
     points.clear();
 }
 
-bool Segs::intersection_naive() {
+bool Segs::intersectionNaive() {
     bool res = false;
     for (int i = 0; i < getLen()-1; i++) {
 //        std::cout << i << std::endl;
@@ -218,7 +220,7 @@ bool Segs::intersection_naive() {
     return res;
 }
 
-bool Segs::intersection_effective() {
+bool Segs::intersectionEffective() {
     Tree tree;
     bool inter = false;
 
