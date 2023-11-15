@@ -60,20 +60,34 @@ Node* Node::getMin() {
     return l->getMin();
 }
 
+int Node::getCount(const Segment& s) const {
+    int count = 0;
+    if (seg == s) count++;
+    if (l) count += l->getCount(s);
+    if (r) count += r->getCount(s);
+    return count;
+}
+
 bool Node::isLeaf() const {
     return l == nullptr && r == nullptr;
 }
 
 Node* Tree::search(Node* node, Segment s, double time) {
-    if (node == nullptr)
-        return nullptr;
+    if (node == nullptr) return nullptr;
+
+    if (time < node->seg.getP1().x || time > node->seg.getP2().x)
+        throw -1;
+
+    if (s == node->seg) return node;
 
     double sKey = s.calcY(time);
     double nodeKey = node->seg.calcY(time);
 
-    if (sKey == nodeKey) return node;
-    else if (sKey < nodeKey) return search(node->l, s, time);
-    else if (sKey > nodeKey) return search(node->r, s, time);
+    if (static_cast<int>(sKey*ERROR_RATE) == static_cast<int>(nodeKey*ERROR_RATE))
+        sKey = nodeKey;
+
+    if (sKey < nodeKey) return search(node->l, s, time);
+    if (sKey >= nodeKey) return search(node->r, s, time);
     throw -1;
 }
 
@@ -87,39 +101,39 @@ void Tree::updateHeight(Node *node) {
         node->height = std::max(node->l->height, node->r->height) + 1;
 }
 
-Node* Tree::insert(Node* node, Segment segment) {
+void Tree::insert(Node* node, Segment segment) {
     if (root == nullptr) {
         root = new Node(segment);
         updateHeight(root);
-        return root;
+        return;
     }
 
-    double sKey = segment.calcY(segment.getP1().x);
-    double nodeKey = node->seg.calcY(segment.getP1().x);
+    double time = segment.getP1().x;
+    double sKey = segment.calcY(time);
+    double nodeKey = node->seg.calcY(time);
 
-    Node* nodeRes = nullptr;
-    if (sKey <= nodeKey) {
+    if (time < node->seg.getP1().x || time > node->seg.getP2().x)
+        throw -1;
+
+    if (sKey < nodeKey) {
         if (node->l == nullptr) {
             node->l = new Node(segment);
             node->l->parent = node;
-            nodeRes = node->l;
         }
         else {
-            nodeRes = insert(node->l, segment);
+            insert(node->l, segment);
         }
-    } else if (sKey > nodeKey) {
+    } else if (sKey >= nodeKey) {
         if (node->r == nullptr) {
             node->r = new Node(segment);
             node->r->parent = node;
-            nodeRes = node->r;
         } else {
-            nodeRes = insert(node->r, segment);
+            insert(node->r, segment);
         }
     }
 
     updateHeight(node);
     balance(node);
-    return nodeRes;
 }
 
 Node* Tree::del(Node* node, Segment seg) {
@@ -129,24 +143,30 @@ Node* Tree::del(Node* node, Segment seg) {
     double sKey = seg.calcY(time);
     double nodeKey = node->seg.calcY(time);
 
+    if (time < node->seg.getP1().x || time > node->seg.getP2().x)
+        throw -1;
+
+    if (static_cast<int>(sKey*ERROR_RATE) == static_cast<int>(nodeKey*ERROR_RATE))
+        sKey = nodeKey;
+
     if (sKey < nodeKey) node->l = del(node->l, seg);
     else if (sKey > nodeKey) node->r = del(node->r, seg);
     else {
         if (node->l == nullptr || node->r == nullptr) {
             Node* temp = node->l ? node->l : node->r;
             if (temp == nullptr) {
-                temp = node;
+                delete node;
                 node = nullptr;
             } else {
+                std::swap(node->seg, temp->seg);
                 node->l = temp->l;
                 node->r = temp->r;
-                node->seg = temp->seg;
             }
             delete temp;
         }
         else {
             Node* minInRight = node->r->getMin();
-            node->seg = minInRight->seg;
+            std::swap(node->seg, minInRight->seg);
             node->r = del(node->r, minInRight->seg);
         }
     }
@@ -155,6 +175,7 @@ Node* Tree::del(Node* node, Segment seg) {
         updateHeight(node);
         balance(node);
     }
+
     return node;
 }
 
@@ -184,6 +205,7 @@ int Tree::getBalance(Node *node) {
 
 void Tree::balance(Node *node) {
     int b = getBalance(node);
+
     if (b == -2) { // перегрузка влево
         if (getBalance(node->l) == 1) leftRotate(node->l);
         rightRotate(node);
@@ -208,16 +230,20 @@ Segment Tree::getNext(Node* node) {
     else return node2->seg;
 }
 
+int Tree::getCount(const Segment& s) {
+    if (root) return root->getCount(s);
+    return 0;
+}
+
 void Tree::printTree(Node *node) {
     if (node == nullptr) return;
     printTree(node->l);
     std::cout << node << std::endl;
     printTree(node->r);
-    std::cout << "---------------------" << std::endl;
 }
 
-void Tree::rightRotate(Node *node) {
-    swap(node, node->l);
+Node* Tree::rightRotate(Node *node) {
+    std::swap(node->seg, node->l->seg);
     Node* buffer = node->r;
     node->r = node->l;
 
@@ -234,17 +260,17 @@ void Tree::rightRotate(Node *node) {
 }
 
 void Tree::leftRotate(Node *node) {
-    swap(node, node->r);
+    std::swap(node->seg, node->r->seg);
     Node* buffer = node->l;
     node->l = node->r;
 
     node->r = node->l->r;
-    if (node->r) node->r->parent = node;
+    if (node->r != nullptr) node->r->parent = node;
 
     node->l->r = node->l->l;
 
     node->l->l = buffer;
-    if (node->l->l) node->l->l->parent = node->l;
+    if (node->l->l != nullptr) node->l->l->parent = node->l;
 
     updateHeight(node->l);
     updateHeight(node);

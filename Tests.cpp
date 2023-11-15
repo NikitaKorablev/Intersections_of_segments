@@ -54,7 +54,7 @@ void test2(const std::string& fileDir) {
     std::ofstream file;
     file.open(fileDir);
 
-    for (int i = 1; i <= 10001; i+=100) {
+    for (int i = 3001; i <= 10001; i+=100) {
         std::cout << "k = "<< i << std::endl;
         s->rSetByPoints(10003, i);
         startTest(s, file, i);

@@ -8,6 +8,15 @@ int r(int left, int right) {
     return rand() % (right - left + 1) + left;
 }
 
+//Point::Point(Point const &point) {
+//    x = point.x;
+//    y = point.y;
+//    z = point.z;
+//
+//    isLeft = point.isLeft;
+//    segmentIndex = point.segmentIndex;
+//}
+
 std::ostream& operator << (std::ostream& out, Point p) {
     out << p.x << " " << p.y;
     return out;
@@ -22,6 +31,16 @@ bool operator < (Point& p1, Point& p2) {
     if (p1.x < p2.x) return true;
     return false;
 }
+
+//Point& Point::operator = (const Point& p) {
+//    x = p.x;
+//    y = p.y;
+//    z = p.z;
+//
+//    isLeft = p.isLeft;
+//    segmentIndex = p.segmentIndex;
+//    return *this;
+//}
 
 bool operator <= (Point& p1, Point& p2) {
     if (p1.x == p2.x) {
@@ -88,7 +107,6 @@ Segment::Segment(Point _p1, Point _p2)  {
 Segment::Segment(const Segment& seg) {
     p1 = seg.p1;
     p2 = seg.p2;
-//    currentX = seg.currentX;
     k = seg.k;
     b = seg.b;
 }

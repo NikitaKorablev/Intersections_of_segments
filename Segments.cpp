@@ -11,18 +11,15 @@ Segs::Segs(const Segs& s) {
     segments = s.segments;
 }
 
-Segment* Segs::randCreateSeg() {
-    double x1 = (double)rand() / RAND_MAX;
-    double x2 = (double)rand() / RAND_MAX;
-    double y1 = (double)rand() / RAND_MAX;
-    double y2 = (double)rand() / RAND_MAX;
+Segment* Segs::randCreateSeg(int width) {
+    double x1 = (double)rand() / RAND_MAX * width;
+    double x2 = (double)rand() / RAND_MAX * width;
+    double y1 = (double)rand() / RAND_MAX * width;
+    double y2 = (double)rand() / RAND_MAX * width;
 
-    while (x2 == x1) x2 = (double)rand() / RAND_MAX;
+    while (x2 == x1) x2 = (double)rand() / RAND_MAX * width;
 
     Point p1(x1, y1), p2(x2, y2);
-//    p1.segmentIndex = getLen();
-//    p2.segmentIndex = getLen();
-
     return new Segment(p1, p2);
 }
 
@@ -40,52 +37,41 @@ Segment* Segs::randSegsByLength(double len) {
     double y2 = middleY + len*std::sin(angle) / 2.0;
 
     Point p1(x1, y1), p2(x2, y2);
-//    p1.segmentIndex = getLen();
-//    p2.segmentIndex = getLen();
-
     return new Segment(p1, p2);
 }
 
-void Segs::rSetByPoints(int n, int k) {
+void Segs::rSetByPoints(int n, int k, int width) {
     clear();
-    if (n == 0) return;
-
-    if (n == 1) {
-        pushBack(*randCreateSeg());
+    if (n == 0) {
+        pushBack(*randCreateSeg(width));
         return;
     }
     if (n < 0 || k < -1 || k >= n-1) throw -1;
 
-    if (k == -1) k = n - 2;
-    int i;
-    for (i = 0; i < k + 1; ++i) {
-        Segment* seg = randCreateSeg();
-        bool isInter = false;
+    if (n == 1) return;
 
-        // проверка на отсутствие пересечений
-        for (const auto & segment : segments) {
-            if (*seg == segment || intersection(*seg, segment)) {
-                isInter = true;
-                break;
+    if (k == -1) k = n - 2;
+
+    Segment* seg;
+    for (int i = 0; i < n; ++i) {
+        seg = randCreateSeg(width);
+        std::cout << "k: " << k << " i: " << i << std::endl;
+        if (i == k+1) {
+            while (!intersection(*seg, segments.back()) ||
+                    seg_has_inter_wout_last(*seg, k)) {
+//                std::cout <<" i: " << i << std::endl;
+                delete seg;
+                seg = randCreateSeg(width);
+            }
+        } else {
+            while (seg_has_inter_befor_K(*seg, k)) {
+//                std::cout << "k: " << k << std::endl;
+                delete seg;
+                seg = randCreateSeg(width);
             }
         }
-
-        if (isInter) i--;
-        else pushBack(*seg);
+        pushBack(*seg);
         delete seg;
-    }
-
-    Segment* seg = randCreateSeg();
-    while (*seg == segments.back() || !intersection(*seg, segments.back())) {
-        delete seg;
-        seg = randCreateSeg();
-    }
-    pushBack(*seg); i++;
-    delete seg;
-
-    while (i < n-1) {
-        pushBack(*randCreateSeg());
-        i++;
     }
 }
 
@@ -100,14 +86,50 @@ void Segs::rSetByLength(double length, int n) {
 }
 
 void Segs::pushBack(Segment seg) {
-    seg.setSegIndexForPoints(getLen());
+    seg.setSegIndexForPoints(static_cast<int>(getLen()));
 
     segments.push_back(seg);
     points.push_back(seg.getP1());
     points.push_back(seg.getP2());
 }
 
+//void Segs::pushBack(Segment* seg) {
+//    seg->setSegIndexForPoints(static_cast<int>(getLen()));
+//
+//    segments.push_back(*seg);
+//    points.push_back(seg->getP1());
+//    points.push_back(seg->getP2());
+//}
+
+//void Segs::changeLast(Segment seg) {
+//    seg.setSegIndexForPoints(static_cast<int>(getLen()) - 1);
+//
+//    Segment old_seg = segments[static_cast<int>(getLen())-1];
+//    points[find_point_ind(old_seg.getP1())] = seg.getP1();
+//    points[find_point_ind(old_seg.getP2())] = seg.getP2();
+//
+//    segments[static_cast<int>(getLen())] = seg;
+//
+//    sortPoints(0, static_cast<int>(getPointLen()) - 1);
+//}
+
+//void Segs::changeLast(Segment* seg) {
+//    segments.pop_back();
+//    points.clear();
+//
+//    for (const auto& s: segments) {
+//        points.push_back(s.getP1());
+//        points.push_back(s.getP2());
+//    }
+//
+//    pushBack(seg);
+//    sortPoints(0, static_cast<int>(getPointLen()) - 1);
+//}
+
 bool intersection(const Segment& a, const Segment& b) {
+//    if (a.getP1().segmentIndex == -1 || b.getP1().segmentIndex == -1)
+//        return false;
+
     Point aP1 = a.getP1(); Point bP1 = b.getP1();
     Point aP2 = a.getP2(); Point bP2 = b.getP2();
     Vector vec1(aP2 - aP1), vec2(bP2 - bP1);
@@ -141,7 +163,6 @@ int Segs::partition(int left, int right) {
 }
 
 void Segs::sortPoints(int left, int right) {
-//    if (right - left == 1) return;
     if (left < right) {
         int current = partition(left, right);
         sortPoints(left, current-1);
@@ -202,12 +223,12 @@ void Segs::clear() {
 }
 
 bool Segs::intersectionNaive() {
+    std::cout << "naive start" << std::endl;
     bool res = false;
     for (int i = 0; i < getLen()-1; i++) {
-//        std::cout << i << std::endl;
         for (int j = i + 1; j < getLen(); j++) {
-//            std::cout << j << std::endl;
             if (intersection(segments[i], segments[j])) {
+                std::cout << i << " " << j << std::endl;
                 std::cout << segments[i] << std::endl;
                 std::cout << segments[j] << std::endl;
                 res = true;
@@ -220,49 +241,79 @@ bool Segs::intersectionNaive() {
     return res;
 }
 
-bool Segs::intersectionEffective() {
+bool Segs::intersectionEffective(bool for_rand_set, int k) {
     Tree tree;
     bool inter = false;
 
     int count = 0;
     for (auto p : points) {
         count++;
-        Segment s = segments[p.segmentIndex];
+//        std::cout << count << std::endl;
+        Segment s;
+//        if (for_rand_set && k != -1 && !p.beforeK(k)) continue;
+        s = segments[p.segmentIndex];
+
         if (s.getP1().x == s.getP2().x) throw -1;
+
         if (p.isLeft) {
-            Node* addedSegment = tree.insert(tree.getRoot(), s);
+            tree.insert(tree.getRoot(), s);
+            Node* addedSegment = tree.search(tree.getRoot(), s, s.getP1().x);
             Segment s1 = tree.getPrev(addedSegment);
             inter = intersection(s, s1);
+            if (s == s1) throw -1;
             if (inter) {
                 std::cout << s << std::endl;
                 std::cout << s1 << std::endl;
                 break;
             }
-
             Segment s2 = tree.getNext(addedSegment);
             inter = intersection(s, s2);
+            if (s == s2) throw -1;
             if (inter) {
                 std::cout << s << std::endl;
                 std::cout << s2 << std::endl;
                 break;
             }
         } else {
+//            std::cout << find_point_ind(s.getP1()) << " "
+//            << find_point_ind(s.getP2()) << std::endl;
+
             Node* node = tree.search(tree.getRoot(), s, p.x);
-            if (node == nullptr) throw -1;
+            if (!node) {
+                node = tree.search(tree.getRoot(), s, p.x);
+            }
+            if (s != node->seg) throw -1;
             Segment s1 = tree.getPrev(node);
             Segment s2 = tree.getNext(node);
             inter = intersection(s1, s2);
+            if (s1 == s2) throw -1;
             if (inter) {
                 std::cout << s1 << std::endl;
                 std::cout << s2 << std::endl;
                 break;
             }
             tree.remove(s);
-            if (tree.search(tree.getRoot(), s, p.x)) throw -1;
+            Node* n = tree.search(tree.getRoot(), s, p.x);
+            if (n) throw -1;
         }
     }
-//    std::cout << "count " << count << std::endl;
+    std::cout << (count == points.size()) << std::endl;
     return inter;
+}
+
+bool Segs::seg_has_inter_befor_K(const Segment& s, int k) {
+    bool isInter = false;
+    for (int i = 0; i < k+2 && i < segments.size(); i++) {
+        if (s == segments[i] || intersection(s, segments[i])) {
+            isInter = true;
+            continue;
+        }
+    }
+    return isInter;
+}
+
+bool Segs::seg_has_inter_wout_last(const Segment& s, int k) {
+    return seg_has_inter_befor_K(s, k-2);
 }
 
 std::ostream& operator << (std::ostream& out, const std::vector<Point>& vec) {

@@ -9,9 +9,6 @@
 #define INTERSECTIONS_OF_SEGMENTS_TREE_H
 
 struct Node {
-//    int value;
-//    double key;
-//    double lastTime;
     int height;
     Node* parent;
     Node* l;
@@ -24,17 +21,15 @@ struct Node {
 
     Node* getPrev();
     Node* getNext();
-
     Node* getMax();
     Node* getMin();
+    int getCount(const Segment& s) const;
 
     bool isLeaf() const;
 
-//    void setCurrentX(double x);
-
     ~Node() {
-        l = nullptr;
-        r = nullptr;
+        delete l;
+        delete r;
     }
 };
 
@@ -47,7 +42,7 @@ class Tree {
     static void updateHeight(Node* node);
     int getHeight(Node* node);
     int getBalance(Node* node);
-    static void rightRotate(Node* node);
+    static Node* rightRotate(Node* node);
     static void leftRotate(Node* node);
     void balance(Node* node);
 public:
@@ -60,17 +55,17 @@ public:
     }
 
     Node* getRoot() { return root; }
-
-    Node* insert(Node* node, Segment seg);
-    Node* del(Node* node, Segment seg);
-    Node* remove(Segment seg);
-
-    void printTree(Node* node);
-
     Segment getPrev(Node* node);
     Segment getNext(Node* node);
 
+    int getCount(const Segment& s);
+
+    void insert(Node* node, Segment seg);
+    Node* del(Node* node, Segment seg);
+    Node* remove(Segment seg);
     Node* search(Node* node, Segment s, double time);
+
+    void printTree(Node* node);
 };
 
 #endif //INTERSECTIONS_OF_SEGMENTS_TREE_H

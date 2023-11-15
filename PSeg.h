@@ -6,17 +6,26 @@
 #ifndef INTERSECTIONS_OF_SEGMENTS_PSEG_H
 #define INTERSECTIONS_OF_SEGMENTS_PSEG_H
 
+//#define ERROR_RATE 0.000001
+#define ERROR_RATE 100000000
+
 int r(int left = -1000, int right = 1000);
 
 struct Point {
     double x, y;
     double z = 0.0;
 
+//    Point(Point const &point);
+
     bool isLeft = false;
+    bool beforeK(int k = -1) const {
+        return k != -1 && segmentIndex <= k + 2;
+    }
     int segmentIndex = -1;
 
     friend Point operator - (Point& p1, Point& p2);
     friend std::ostream& operator << (std::ostream& out, Point p);
+//    Point& operator = (const Point& p);
     friend bool operator == (Point& p1, Point& p2);
     friend bool operator < (Point& p1, Point& p2);
     friend bool operator <= (Point& p1, Point& p2);
