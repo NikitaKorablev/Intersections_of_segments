@@ -241,16 +241,14 @@ bool Segs::intersectionNaive() {
     return res;
 }
 
-bool Segs::intersectionEffective(bool for_rand_set, int k) {
+bool Segs::intersectionEffective() {
     Tree tree;
     bool inter = false;
 
     int count = 0;
     for (auto p : points) {
         count++;
-//        std::cout << count << std::endl;
         Segment s;
-//        if (for_rand_set && k != -1 && !p.beforeK(k)) continue;
         s = segments[p.segmentIndex];
 
         if (s.getP1().x == s.getP2().x) throw -1;
@@ -275,9 +273,6 @@ bool Segs::intersectionEffective(bool for_rand_set, int k) {
                 break;
             }
         } else {
-//            std::cout << find_point_ind(s.getP1()) << " "
-//            << find_point_ind(s.getP2()) << std::endl;
-
             Node* node = tree.search(tree.getRoot(), s, p.x);
             if (!node) {
                 node = tree.search(tree.getRoot(), s, p.x);
