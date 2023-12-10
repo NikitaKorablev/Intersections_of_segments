@@ -116,6 +116,7 @@ void Segment::calcCoef() {
     double a2 = p2.x - p1.x;
 
     k = (a1) / (a2);
+
     b = (p1.y*p2.x - p1.x*p2.y) / (a2);
 }
 

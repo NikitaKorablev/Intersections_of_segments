@@ -12,4 +12,6 @@ add_executable(Intersections_of_segments main.cpp
         Tests.h
         PSeg.cpp
         PSeg.h
+        NaiveAlg.cpp
+        EffectiveAlg.cpp
 )
